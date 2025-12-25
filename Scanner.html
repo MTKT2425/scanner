@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Barcode Scanner</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 20px; }
+        #reader { width: 100%; max-width: 500px; margin: auto; }
+        #status { margin-top: 20px; font-weight: bold; color: green; }
+    </style>
+</head>
+<body>
+
+    <h2>Inventory Scanner</h2>
+    <div id="reader"></div>
+    <div id="status">Ready to scan...</div>
+
+    <script>
+        // REPLACE THIS WITH YOUR GOOGLE WEB APP URL
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYEdvk7JB-fgaVdtHa3UXttvyupZx0z3tS_t7vXB4vNF23hnWTBelEwKpx0ZcE3nyL6A/exec";
+
+        function onScanSuccess(decodedText, decodedResult) {
+            document.getElementById('status').innerText = "Sending: " + decodedText;
+            
+            // Stop scanning temporarily to prevent double entries
+            html5QrcodeScanner.clear();
+
+            // Send data to Google Sheets
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors", // Required for cross-domain App Script requests
+                cache: "no-cache",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ barcode: decodedText })
+            })
+            .then(() => {
+                document.getElementById('status').innerText = "Saved: " + decodedText;
+                // Restart scanner after 2 seconds
+                setTimeout(() => { renderScanner(); }, 2000);
+            })
+            .catch(err => alert("Error: " + err));
+        }
+
+        function renderScanner() {
+            window.html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+            html5QrcodeScanner.render(onScanSuccess);
+        }
+
+        renderScanner();
+    </script>
+</body>
+</html>
