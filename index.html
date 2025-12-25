@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Barcode Scanner</title>
+    <title>MTKT - Scanner</title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         body { font-family: sans-serif; text-align: center; padding: 20px; }
@@ -13,16 +13,16 @@
 </head>
 <body>
 
-    <h2>Inventory Scanner</h2>
+    <h2>Imbas kod QR</h2>
     <div id="reader"></div>
-    <div id="status">Ready to scan...</div>
+    <div id="status">Sedia untuk mengimbas...</div>
 
     <script>
         // REPLACE THIS WITH YOUR GOOGLE WEB APP URL
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYEdvk7JB-fgaVdtHa3UXttvyupZx0z3tS_t7vXB4vNF23hnWTBelEwKpx0ZcE3nyL6A/exec";
 
         function onScanSuccess(decodedText, decodedResult) {
-            document.getElementById('status').innerText = "Sending: " + decodedText;
+            document.getElementById('status').innerText = "Sedang menghantar: " + decodedText;
             
             // Stop scanning temporarily to prevent double entries
             html5QrcodeScanner.clear();
@@ -36,7 +36,7 @@
                 body: JSON.stringify({ barcode: decodedText })
             })
             .then(() => {
-                document.getElementById('status').innerText = "Saved: " + decodedText;
+                document.getElementById('status').innerText = "SELESAI! " + decodedText;
                 // Restart scanner after 2 seconds
                 setTimeout(() => { renderScanner(); }, 2000);
             })
@@ -52,3 +52,4 @@
     </script>
 </body>
 </html>
+
